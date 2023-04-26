@@ -74,7 +74,7 @@ class ExampleTest extends \PHPUnit\Framework\TestCase
             'unknownTokens' => $ret->unknownTokens(),
         ]);*/
 
-        $firebasePhpLegacy = new FirebasePhpLegacy($config['legacy']);
+        /*$firebasePhpLegacy = new FirebasePhpLegacy($config['legacy']);
         $ret = $firebasePhpLegacy->cloudMessageSend(
             $config['toDeviceToken'],
             $message
@@ -82,7 +82,7 @@ class ExampleTest extends \PHPUnit\Framework\TestCase
         var_dump([
             'statusCode' => $ret->getStatusCode(),
             'body' => (string) $ret->getBody(),
-        ]);
+        ]);*/
 
         $this->assertTrue(true);
     }
