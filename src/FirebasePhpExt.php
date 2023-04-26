@@ -5,6 +5,7 @@ namespace YusamHub\FirebasePhpExt;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\Http\HttpClientOptions;
 use Kreait\Firebase\Messaging;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\MulticastSendReport;
@@ -16,7 +17,7 @@ class FirebasePhpExt
     protected string $serviceAccountFile = '';
     protected string $logFile = '';
     protected string $logDebugFile = '';
-
+    protected int $timeout = 20;
     protected Factory $factory;
     protected Messaging $messaging;
 
@@ -34,10 +35,15 @@ class FirebasePhpExt
         $httpDebugLogger = new Logger('firebase_http_debug_logs');
         $httpDebugLogger->pushHandler(new StreamHandler($this->logDebugFile));
 
+        $options = HttpClientOptions::default();
+        $options = $options->withTimeOut($this->timeout);
+
         $this->factory = (new Factory())
             ->withHttpLogger($httpLogger, null, 'debug', 'debug')
             ->withHttpDebugLogger($httpDebugLogger, null, 'debug', 'debug')
-            ->withServiceAccount($this->serviceAccountFile);
+            ->withHttpClientOptions($options)
+            ->withServiceAccount($this->serviceAccountFile)
+        ;
 
         $this->messaging = $this->factory->createMessaging();
     }

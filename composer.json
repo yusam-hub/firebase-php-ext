@@ -4,9 +4,8 @@
     "type": "package",
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.1|^8.2",
-        "google/auth": "*",
-        "monolog/monolog": "*",
+        "php": "^7.4|^8.0",
+        "ext-json": "*",
         "kreait/firebase-php": "*"
     },
     "require-dev": {

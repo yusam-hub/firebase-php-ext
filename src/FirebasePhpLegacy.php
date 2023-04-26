@@ -3,15 +3,17 @@
 namespace YusamHub\FirebasePhpExt;
 
 use GuzzleHttp\Exception\GuzzleException;
-use http\Client\Response;
 use Psr\Http\Message\ResponseInterface;
 
 class FirebasePhpLegacy
 {
     protected string $serverUrl = '';
     protected string $serverKey = '';
-
+    protected int $timeout = 20;
     protected \GuzzleHttp\Client $client;
+
+    protected array $headers;
+
     /**
      * @param array $config
      */
@@ -22,29 +24,26 @@ class FirebasePhpLegacy
                 $this->{$k} = $v;
             }
         }
-        $this->client = new \GuzzleHttp\Client();
+
+        $this->client = new \GuzzleHttp\Client(['timeout' => $this->timeout]);
+
+        $this->headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'key=' . $this->serverKey
+        ];
     }
 
     /**
-     * @param array|string $to
+     * @param string $toDeviceToken
      * @param array $data
      * @param bool $validateOnly
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function cloudMessageSend(array|string $to, array $data = [], bool $validateOnly = false): ResponseInterface
+    public function cloudMessageSend(string $toDeviceToken, array $data = [], bool $validateOnly = false): ResponseInterface
     {
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'key=' . $this->serverKey
-        ];
-
         $senderData = [];
-        if (is_string($to)) {
-            $senderData['to'] = $to;
-        } elseif (is_array($to)) {
-            $senderData['registration_ids'] = $to;
-        }
+        $senderData['to'] = $toDeviceToken;
 
         if ($validateOnly === true) {
             $data = array_merge([
@@ -55,7 +54,33 @@ class FirebasePhpLegacy
         }
 
         return $this->client->request('POST', $this->serverUrl, [
-            'headers' => $headers,
+            'headers' => $this->headers,
+            'body' => json_encode($data)
+        ]);
+    }
+
+    /**
+     * @param array $toDeviceTokens
+     * @param array $data
+     * @param bool $validateOnly
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    public function cloudMessageMulticast(array $toDeviceTokens, array $data = [], bool $validateOnly = false): ResponseInterface
+    {
+        $senderData = [];
+        $senderData['registration_ids'] = $toDeviceTokens;
+
+        if ($validateOnly === true) {
+            $data = array_merge([
+                'dry_run' => true,
+            ], $senderData);
+        } else {
+            $data = array_merge($data, $senderData);
+        }
+
+        return $this->client->request('POST', $this->serverUrl, [
+            'headers' => $this->headers,
             'body' => json_encode($data)
         ]);
     }
