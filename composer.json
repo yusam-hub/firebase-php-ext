@@ -1,0 +1,29 @@
+{
+    "name": "yusam-hub/firebase-php-ext",
+    "description": "yusam-hub/firebase-php-ext",
+    "type": "package",
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.1|^8.2",
+        "google/auth": "*",
+        "monolog/monolog": "*",
+        "kreait/firebase-php": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "YusamHub\\FirebasePhpExt\\": "src/"
+        },
+        "files": [
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "YusamHub\\FirebasePhpExt\\Tests\\": "tests/"
+        },
+        "files": [
+        ]
+    }
+}
