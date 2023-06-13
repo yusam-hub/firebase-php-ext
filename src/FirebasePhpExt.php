@@ -49,6 +49,14 @@ class FirebasePhpExt
     }
 
     /**
+     * @return Messaging
+     */
+    public function getMessaging(): Messaging
+    {
+        return $this->messaging;
+    }
+
+    /**
      * @return array
      */
     public function getFactoryDebugInfo(): array
