@@ -6,7 +6,8 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
-        "kreait/firebase-php": "*"
+        "kreait/firebase-php": "*",
+        "react/http": "^1.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"

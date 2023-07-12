@@ -2,11 +2,13 @@
 
 namespace YusamHub\FirebasePhpExt\Tests;
 
+use Google\Auth\OAuth2;
 use GuzzleHttp\Exception\GuzzleException;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
 use YusamHub\FirebasePhpExt\FirebasePhpExt;
 use YusamHub\FirebasePhpExt\FirebasePhpLegacy;
+use YusamHub\FirebasePhpExt\FirebasePhpReact;
 
 class ExampleTest extends \PHPUnit\Framework\TestCase
 {
@@ -39,40 +41,18 @@ class ExampleTest extends \PHPUnit\Framework\TestCase
             ]
         ];
 
+        $firebasePhpReact = new FirebasePhpReact($config);
+        $firebasePhpReact->cloudMessageSend(
+            $config['toDeviceToken'],
+            $message
+        );
+
         /*$firebasePhpExt = new FirebasePhpExt($config);
         $ret = $firebasePhpExt->cloudMessageSend(
             $config['toDeviceToken'],
             $message
         );
         var_dump($ret);*/
-
-        /*$firebasePhpExt = new FirebasePhpExt($config);
-        $ret = $firebasePhpExt->cloudMessageMulticast(
-            [
-                $config['toDeviceToken'],
-            ],
-            $message
-        );
-        var_dump([
-            'count' => $ret->count(),
-            'hasFailures' => $ret->hasFailures(),
-            'invalidTokens' => $ret->invalidTokens(),
-            'unknownTokens' => $ret->unknownTokens(),
-        ]);*/
-
-        /*$firebasePhpExt = new FirebasePhpExt($config);
-        $ret = $firebasePhpExt->cloudMessageSendAll(
-            [
-                $config['toDeviceToken'],
-            ],
-            $message
-        );
-        var_dump([
-            'count' => $ret->count(),
-            'hasFailures' => $ret->hasFailures(),
-            'invalidTokens' => $ret->invalidTokens(),
-            'unknownTokens' => $ret->unknownTokens(),
-        ]);*/
 
         /*$firebasePhpLegacy = new FirebasePhpLegacy($config['legacy']);
         $ret = $firebasePhpLegacy->cloudMessageSend(
