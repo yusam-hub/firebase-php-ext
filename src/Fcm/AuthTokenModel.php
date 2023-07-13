@@ -2,7 +2,7 @@
 
 namespace YusamHub\FirebasePhpExt\Fcm;
 
-class AuthTokenInfo
+class AuthTokenModel
 {
     public ?string $access_token = null;
     public ?int $expires_in = null;

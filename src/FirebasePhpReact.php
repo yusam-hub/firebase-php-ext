@@ -109,7 +109,7 @@ class FirebasePhpReact
                 'Content-Type' => 'application/x-www-form-urlencoded',
             ],
             Query::build([
-                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                'grant_type' => self::JWT_URN,
                 'assertion' => $this->toJwt()
             ])
         )
