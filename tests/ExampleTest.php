@@ -41,12 +41,6 @@ class ExampleTest extends \PHPUnit\Framework\TestCase
             ]
         ];
 
-        $firebasePhpReact = new FirebasePhpReact($config);
-        $firebasePhpReact->cloudMessageSend(
-            $config['toDeviceToken'],
-            $message
-        );
-
         /*$firebasePhpExt = new FirebasePhpExt($config);
         $ret = $firebasePhpExt->cloudMessageSend(
             $config['toDeviceToken'],

@@ -76,11 +76,22 @@ class ServiceAccountModel
         );
     }
 
+    /**
+     * @return string
+     */
     public function getFcmProjectsMessagesSendUrl(): string
     {
         if (is_null($this->project_id)) {
             throw new \RuntimeException('No project_id available');
         }
         return sprintf('https://fcm.googleapis.com/v1/projects/%s/messages:send', $this->project_id);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTokenUrl(): ?string
+    {
+        return $this->token_uri;
     }
 }
