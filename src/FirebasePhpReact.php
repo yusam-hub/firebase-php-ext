@@ -120,6 +120,7 @@ class FirebasePhpReact
                 }
 
                 $res = (array)json_decode((string)$response->getBody(), true);
+                var_dump($res);
 
                 $browser
                     ->request('POST', 'https://fcm.googleapis.com/v1/projects/kmapushnew/messages:send',
