@@ -27,6 +27,9 @@ class AuthTokenModel
         }
         $this->beginTime = time();
         $this->endTime =  $this->beginTime + intval($this->expires_in);
+        if ($this->token_type !== 'Bearer') {
+            throw new \RuntimeException('No Bearer available');
+        }
     }
 
     /**
