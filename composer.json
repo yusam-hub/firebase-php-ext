@@ -6,6 +6,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
+        "ext-pcntl": "*",
         "kreait/firebase-php": "*",
         "react/http": "^1.8"
     },
