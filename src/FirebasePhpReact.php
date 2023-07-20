@@ -6,11 +6,13 @@ use GuzzleHttp\Psr7\Query;
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\LoopInterface;
 use React\Http\Browser;
+use React\Http\Message\ResponseException;
 use YusamHub\FirebasePhpExt\Fcm\AuthTokenModel;
 use YusamHub\FirebasePhpExt\Fcm\ServiceAccountModel;
 
 class FirebasePhpReact
 {
+    const ERROR_STRING_INVALID_TOKEN = 'The registration token is not a valid FCM registration token';
     protected ServiceAccountModel $serviceAccountModel;
 
     /**
@@ -92,8 +94,10 @@ class FirebasePhpReact
     {
         $fcmBodyRequestValidateFalse = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":false}';
         $fcmBodyRequestValidateTrue = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
+        $fcmBodyRequestValidateTrueWithoutBody = '{"message":{"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
+        $fcmBodyRequestValidateTrueWithoutBodyInvalidToken = '{"message":{"token":"dr8ZnHpbucuAvkXavpjZxd:1APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
 
-        $this->fcmMessagesSend($fcmBodyRequestValidateTrue,
+        $this->fcmMessagesSend($fcmBodyRequestValidateTrueWithoutBodyInvalidToken,
             function (ResponseInterface $response) use ($loop) {
                 if ($response->getStatusCode() !== 200) {
                     $loop->stop();
@@ -102,10 +106,20 @@ class FirebasePhpReact
                 var_dump($res);
                 $loop->stop();
             },
-            function (\Exception $e) use ($loop) {
-                var_dump($e->getMessage());
+            function (ResponseException $e) use ($loop) {
+                if ($this->isRegistrationTokenInvalid($e)) {
+                    var_dump("Invalid registration token");
+                } else {
+                    var_dump("Error: " . $e->getMessage());
+                }
                 $loop->stop();
             }
         );
+    }
+
+    protected function isRegistrationTokenInvalid(ResponseException $e): bool
+    {
+        $res = (array)json_decode((string)$e->getResponse()->getBody(), true);
+        return ($e->getCode() === 400) && (isset($res['error']['message']) && mb_strstr($res['error']['message'], self::ERROR_STRING_INVALID_TOKEN));
     }
 }
