@@ -15,7 +15,7 @@ $timer = $loop->addPeriodicTimer(0.1, function ($timer) use ($loop) {
     $config = require __DIR__ . '/../config/config.php';
 
     $firebasePhpReact = new FirebasePhpReact(new \YusamHub\FirebasePhpExt\Fcm\ServiceAccountModel($config));
-    $firebasePhpReact->testReactPhp($loop);
+    $firebasePhpReact->testReactPhp_fcmMessagesSend($loop);
 
 });
 

@@ -31,9 +31,6 @@ class FirebasePhpReact
     {
         $browser = new Browser();
 
-        /**
-         * todo: нужна блокировка, что бы только один поток обратился за токеном, а остальные ждали когда появиться токен
-         */
         if (AuthTokenModel::Instance()->isExpired()) {
             //если нет токена, получаем его и потом запрос к firebase
             $browser
@@ -91,12 +88,13 @@ class FirebasePhpReact
         }
     }
 
-    public function testReactPhp(LoopInterface $loop): void
+    public function testReactPhp_fcmMessagesSend(LoopInterface $loop): void
     {
-        $fcmBodyRequest = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":false}';
+        $fcmBodyRequestValidateFalse = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":false}';
+        $fcmBodyRequestValidateTrue = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
 
-        $this->fcmMessagesSend($fcmBodyRequest,
-            function(ResponseInterface $response) use($loop) {
+        $this->fcmMessagesSend($fcmBodyRequestValidateTrue,
+            function (ResponseInterface $response) use ($loop) {
                 if ($response->getStatusCode() !== 200) {
                     $loop->stop();
                 }
@@ -104,20 +102,10 @@ class FirebasePhpReact
                 var_dump($res);
                 $loop->stop();
             },
-            function(\Exception $e) use($loop) {
+            function (\Exception $e) use ($loop) {
                 var_dump($e->getMessage());
                 $loop->stop();
             }
         );
-    }
-
-    /**
-     * @param string $toDeviceToken
-     * @param array $data
-     * @param bool $validateOnly
-     */
-    public function cloudMessageSend(string $toDeviceToken, array $data = [], bool $validateOnly = false): void
-    {
-
     }
 }
