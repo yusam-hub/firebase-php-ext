@@ -25,11 +25,23 @@ class ServiceAccountModel
         'https://www.googleapis.com/auth/securetoken',
     ];
 
+    protected static ?ServiceAccountModel $instance = null;
+
+    public static function Instance(): ?ServiceAccountModel
+    {
+        return self::$instance;
+    }
+
     /**
      * @param array $config
      */
     public function __construct(array $config = [])
     {
+        if (!is_null(self::$instance)) {
+            throw new \RuntimeException(sprintf("Only one instance [%s] can be at once", get_class($this)));
+        }
+        self::$instance = $this;
+
         foreach($config as $k => $v) {
             if (property_exists($this, $k)) {
                 $this->{$k} = $v;
