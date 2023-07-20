@@ -94,4 +94,12 @@ class ServiceAccountModel
     {
         return $this->token_uri;
     }
+
+    /**
+     * @return string
+     */
+    public function getProjectId(): string
+    {
+        return strval($this->project_id);
+    }
 }
