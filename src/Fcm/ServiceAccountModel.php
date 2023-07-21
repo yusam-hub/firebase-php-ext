@@ -4,11 +4,12 @@ namespace YusamHub\FirebasePhpExt\Fcm;
 
 class ServiceAccountModel
 {
-    const DEFAULT_EXPIRY_SECONDS = 3600; // 1 hour
+    const DEFAULT_EXPIRE_SECONDS = 3600; // 1 hour
     const DEFAULT_SKEW_SECONDS = 60; // 1 minute
     const JWT_URN = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
     protected ?string $serviceAccountFile = null;
-
+    protected ?int $tokenSkewSeconds = null;
+    protected ?int $tokenExpireSeconds = null;
     protected ?string $private_key = null;
     protected ?string $client_email = null;
     protected ?string $project_id = null;
@@ -75,8 +76,8 @@ class ServiceAccountModel
 
         $assertion = [
             'iss' => $this->client_email,
-            'exp' => ($now + self::DEFAULT_EXPIRY_SECONDS),
-            'iat' => ($now - self::DEFAULT_SKEW_SECONDS),
+            'exp' => ($now + $this->tokenExpireSeconds??self::DEFAULT_EXPIRE_SECONDS),
+            'iat' => ($now - $this->tokenSkewSeconds??self::DEFAULT_SKEW_SECONDS),
             'aud' => $this->token_uri,
             'scope' => implode(" ", $this->scope),
         ];
