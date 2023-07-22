@@ -1,6 +1,5 @@
 <?php
 
-use GuzzleHttp\Psr7\Query;
 use Psr\Http\Message\ResponseInterface;
 use React\Http\Message\ResponseException;
 use YusamHub\FirebasePhpExt\FirebasePhpReact;
@@ -14,15 +13,22 @@ $timer = $loop->addPeriodicTimer(0.1, function ($timer) use ($loop) {
 
     echo sprintf('Start call at [ %d ]', date("Y-m-d H:i:s")) . PHP_EOL;
 
-    $config = require __DIR__ . '/../config/config.php';
+    \YusamHub\FirebasePhpExt\Fcm\AuthTokenStorage::Instance()->setFilename(
+        __DIR__ . '/../tmp/token.json'
+    );
+    $authTokenModel = \YusamHub\FirebasePhpExt\Fcm\AuthTokenStorage::Instance()->waitWhileTokenIsValid(function(string $message){
+        echo $message . PHP_EOL;
+    });
+    \YusamHub\FirebasePhpExt\Fcm\AuthTokenModel::Instance()->assign($authTokenModel->toArray());
 
+    $config = require __DIR__ . '/../config/config.php';
     new \YusamHub\FirebasePhpExt\Fcm\ServiceAccountModel($config);
     $firebasePhpReact = new FirebasePhpReact(\YusamHub\FirebasePhpExt\Fcm\ServiceAccountModel::Instance());
 
-    //$fcmBodyRequestValidate = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":false}';
+    $fcmBodyRequestValidate = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":false}';
     //$fcmBodyRequestValidate = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
     //$fcmBodyRequestValidate = '{"message":{"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
-    $fcmBodyRequestValidate = '{"message":{"token":"dr8ZnHpbucuAvkXavpjZxd:1APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
+    //$fcmBodyRequestValidate = '{"message":{"token":"dr8ZnHpbucuAvkXavpjZxd:1APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
 
     $firebasePhpReact->fcmMessagesSend($fcmBodyRequestValidate,
         function (ResponseInterface $response) use ($loop) {

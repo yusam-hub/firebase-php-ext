@@ -32,62 +32,18 @@ class FirebasePhpReact
     public function fcmMessagesSend(string $body, callable $onResponse, callable $onFail): void
     {
         $browser = new Browser();
-
-        if (AuthTokenModel::Instance()->isExpired()) {
-            //если нет токена, получаем его и потом запрос к firebase
-            $browser
-                ->request('POST', $this->serviceAccountModel->getTokenUrl(),
-                    [
-                        'Cache-Control' => 'no-store',
-                        'Content-Type' => 'application/x-www-form-urlencoded',
-                    ],
-                    Query::build([
-                        'grant_type' => $this->serviceAccountModel::JWT_URN,
-                        'assertion' => $this->serviceAccountModel->toJwt()
-                    ])
-                )
-                ->then(
-                    function (ResponseInterface $response) use ($browser, $body, $onResponse, $onFail) {
-
-                        if ($response->getStatusCode() !== 200) {
-                            $exception = new ResponseException($response, "Invalid response of getting access token request");
-                            $onFail($exception);//пока такой вариант, надо узнать как в promise обрабатывается исключения типа throw new \Exception
-                            return;
-                        }
-
-                        AuthTokenModel::Instance()->assign((array)json_decode((string)$response->getBody(), true));
-
-                        //запрос к firebase
-                        $browser
-                            ->request('POST', $this->serviceAccountModel->getFcmProjectsMessagesSendUrl(),
-                                [
-                                    'Content-Type' => 'application/json',
-                                    'Authorization' => AuthTokenModel::Instance()->getAuthorizationHeaderValue(),
-                                ],
-                                $body
-                            )
-                            ->then(
-                                $onResponse,
-                                $onFail
-                            );
-                    },
-                    $onFail
-                );
-        } else {
-            //если есть токен, сразу запрос к firebase
-            $browser
-                ->request('POST', $this->serviceAccountModel->getFcmProjectsMessagesSendUrl(),
-                    [
-                        'Content-Type' => 'application/json',
-                        'Authorization' => AuthTokenModel::Instance()->getAuthorizationHeaderValue(),
-                    ],
-                    $body
-                )
-                ->then(
-                    $onResponse,
-                    $onFail
-                );
-        }
+        $browser
+            ->request('POST', $this->serviceAccountModel->getFcmProjectsMessagesSendUrl(),
+                [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => AuthTokenModel::Instance()->getAuthorizationHeaderValue(),
+                ],
+                $body
+            )
+            ->then(
+                $onResponse,
+                $onFail
+            );
     }
 
     /**
