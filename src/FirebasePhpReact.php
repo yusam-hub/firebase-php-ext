@@ -2,9 +2,6 @@
 
 namespace YusamHub\FirebasePhpExt;
 
-use GuzzleHttp\Psr7\Query;
-use Psr\Http\Message\ResponseInterface;
-use React\EventLoop\LoopInterface;
 use React\Http\Browser;
 use React\Http\Message\ResponseException;
 use YusamHub\FirebasePhpExt\Fcm\AuthTokenModel;
@@ -14,13 +11,19 @@ class FirebasePhpReact
 {
     const ERROR_STRING_INVALID_TOKEN = 'The registration token is not a valid FCM registration token';
     protected ServiceAccountModel $serviceAccountModel;
+    protected AuthTokenModel $authTokenModel;
 
     /**
      * @param ServiceAccountModel $serviceAccountModel
+     * @param AuthTokenModel $authTokenModel
      */
-    public function __construct(ServiceAccountModel $serviceAccountModel)
+    public function __construct(
+        ServiceAccountModel $serviceAccountModel,
+        AuthTokenModel $authTokenModel
+    )
     {
         $this->serviceAccountModel = $serviceAccountModel;
+        $this->authTokenModel = $authTokenModel;
     }
 
     /**
@@ -36,7 +39,7 @@ class FirebasePhpReact
             ->request('POST', $this->serviceAccountModel->getFcmProjectsMessagesSendUrl(),
                 [
                     'Content-Type' => 'application/json',
-                    'Authorization' => AuthTokenModel::Instance()->getAuthorizationHeaderValue(),
+                    'Authorization' => $this->authTokenModel->getAuthorizationHeaderValue(),
                 ],
                 $body
             )

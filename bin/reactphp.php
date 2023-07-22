@@ -23,7 +23,10 @@ $timer = $loop->addPeriodicTimer(0.1, function ($timer) use ($loop) {
 
     $config = require __DIR__ . '/../config/config.php';
     new \YusamHub\FirebasePhpExt\Fcm\ServiceAccountModel($config);
-    $firebasePhpReact = new FirebasePhpReact(\YusamHub\FirebasePhpExt\Fcm\ServiceAccountModel::Instance());
+    $firebasePhpReact = new FirebasePhpReact(
+        \YusamHub\FirebasePhpExt\Fcm\ServiceAccountModel::Instance(),
+        \YusamHub\FirebasePhpExt\Fcm\AuthTokenModel::Instance()
+    );
 
     $fcmBodyRequestValidate = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":false}';
     //$fcmBodyRequestValidate = '{"message":{"data":{"title":"title test account","body":"body test account","icon":"https:\/\/localhost","image":"https:\/\/localhost","click_action":"https:\/\/localhost","actions":"[{\"title\":\"buttonTitle1\",\"action\":\"button1\"},{\"title\":\"buttonTitle2\",\"action\":\"button2\"}]"},"token":"dr8ZnHpbucuAvkXavpjZxd:APA91bFV2ljpYg3Jwa_MWlmRqloGJVqgJEAZn8LYebmcWUkhFRbiRtD9pkfFYmASTwFPL3eyZqrCTOOqFtEc6nTUHEIn8RBMVqMXp88pO-Y4E2pbtIyNFVu4uIqrD3JGvV4gaAsLIZIT"},"validate_only":true}';
