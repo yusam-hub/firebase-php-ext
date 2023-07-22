@@ -103,6 +103,7 @@ class AuthTokenModel
         if ($response->getStatusCode() === 200) {
             $this->reset();
             $this->assign(@json_decode($response->getBody()->getContents(), true));
+            return true;
         }
         return false;
     }
