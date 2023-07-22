@@ -8,6 +8,7 @@ class ServiceAccountModel
     const DEFAULT_SKEW_SECONDS = 60; // 1 minute
     const JWT_URN = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
     protected ?string $serviceAccountFile = null;
+    protected ?string $storageTokenFile = null;
     protected ?int $tokenSkewSeconds = null;
     protected ?int $tokenExpireSeconds = null;
     protected ?string $private_key = null;
@@ -115,4 +116,14 @@ class ServiceAccountModel
     {
         return strval($this->project_id);
     }
+
+    /**
+     * @return string|null
+     */
+    public function getStorageTokenFile(): ?string
+    {
+        return $this->storageTokenFile;
+    }
+
+
 }
