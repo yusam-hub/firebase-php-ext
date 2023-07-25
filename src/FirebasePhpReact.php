@@ -30,12 +30,12 @@ class FirebasePhpReact
      * @param string $body
      * @param callable $onResponse
      * @param callable $onFail
-     * @return void
+     * @return \React\Promise\PromiseInterface
      */
-    public function fcmMessagesSend(string $body, callable $onResponse, callable $onFail): void
+    public function fcmMessagesSend(string $body, callable $onResponse, callable $onFail): \React\Promise\PromiseInterface
     {
         $browser = new Browser();
-        $browser
+        return $browser
             ->request('POST', $this->serviceAccountModel->getFcmProjectsMessagesSendUrl(),
                 [
                     'Content-Type' => 'application/json',
