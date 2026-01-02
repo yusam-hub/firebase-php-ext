@@ -1,10 +1,6 @@
 #### yusam-hub/firebase-php-ext
-
-    "php": "^7.4|^8.0"
-
-#### tests
-
-    sh phpinit
+  
+  "php": ">=7.4 <9.0"
 
 #### setup
 
@@ -19,5 +15,6 @@
     "require": {
         ...
         "yusam-hub/firebase-php-ext": "dev-master"
+        "yusam-hub/firebase-php-ext": "^1.0"
         ...
     }
